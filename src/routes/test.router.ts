@@ -1,75 +1,76 @@
 // External Dependencies
-import { Console } from "console";
 import * as express from "express";
 import { Request, Response } from "express";
-// import * as dotenv from "dotenv";
-import Models from "../models/read_db";
-// import  Connection  from "../services/database-service";
-
-function removeAttribute(attribute){
-    attribute.removeAttribute("createdAt")
-    attribute.removeAttribute("updatedAt")
-    return attribute
-}
-
-const Payment = removeAttribute(Models.Payment);
-
+import { Customer } from "../models/customer";
+import { CustomerType } from "../models/customer_type";
 
 // Global Config
 export const testsRouter = express.Router();
 testsRouter.use(express.json());
 
+function getErrorMessage(error: unknown) {
+  if (error instanceof Error) return error.message;
+  return String(error);
+}
+
+// GET all customers
+testsRouter.get(
+  "/customer",
+  async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const allCustomers: Customer[] = await Customer.findAll();
+      return res.status(200).json(allCustomers);
+    } catch (error) {
+      return res.status(500).send(getErrorMessage(error));
+    }
+  }
+);
+
+// POST a customer
+testsRouter.post("/customer", async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const customer: Customer = await Customer.create({ ...req.body });
+    return res.status(201).json(customer);
+  } catch (error) {
+    console.error(error);
+    return res.status(400).send(getErrorMessage(error));
+  }
+});
+
 // GET
-testsRouter.get("/payment", async (_req: Request, res: Response) => {
-  try {
-    Payment.findAll().then((Payment: any) => res.json(Payment));
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-});
-
-testsRouter.get("/payment/:id", async (req: Request, res: Response) => {
-  try {
-    Payment.findByPk(req.params.id).then((Payment: any) => res.json(Payment));
-  } catch (error) {
-    res
-      .status(404)
-      .send(`Unable to find matching document with id: ${req.params.id}`);
-  }
-});
-
-// Payment.findAll({ where: { paymentID: req.params.id } }).then((Payment: any) => res.json(Payment));
-
-// testsRouter.get("/:id", async (req: Request, res: Response) => {
-//     const id = req?.params?.id;
-
-//     try {
-
-//         const query = { _id: new ObjectId(id) };
-//         const test = (await collections.tests.findOne(query)) as unknown as Connect;
-
-//         if (test) {
-//             res.status(200).send(test);
-//         }
-//     } catch (error) {
-//         res.status(404).send(`Unable to find matching document with id: ${req.params.id}`);
-//     }
+// testsRouter.get("/payment", async (_req: Request, res: Response) => {
+//   try {
+//     Payment.findAll().then((Payment: any) => res.json(Payment));
+//   } catch (error) {
+//     res.status(500).send(error.message);
+//   }
 // });
 
-// // POST
-// testsRouter.post("/", async (req: Request, res: Response) => {
-//     try {
-//         const newTest = req.body as Connect;
-//         const result = await collections.tests.insertOne(newTest);
-
-//         result
-//             ? res.status(201).send(`Successfully created a new test with id ${result.insertedId}`)
-//             : res.status(500).send("Failed to create a new test.");
-//     } catch (error) {
-//         console.error(error);
-//         res.status(400).send(error.message);
-//     }
+// // Read entities using WHERE and AND
+// testsRouter.get("/payment/search", async (req: Request, res: Response) => {
+//   Payment.findAll({
+//     where: { paymentMethod: req.query.method, paymentType: req.query.type },
+//   }).then((Payment: any) => res.json(Payment));
 // });
+
+// // Get by id
+// testsRouter.get("/payment/:id", async (req: Request, res: Response) => {
+//   try {
+//     Payment.findByPk(req.params.id).then((Payment: any) => res.json(Payment));
+//   } catch (error) {
+//     res
+//       .status(404)
+//       .send(`Unable to find matching document with id: ${req.params.id}`);
+//   }
+// });
+
+// testsRouter.post('/customer', async (req: Request, res: Response) => {
+//   Note.create({ note: req.body.note, tag: req.body.tag }).then((Payment: any) {
+//     res.json(note);
+//   });
+// });
+
+// 
 
 // // PUT
 // testsRouter.put("/:id", async (req: Request, res: Response) => {

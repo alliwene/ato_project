@@ -1,9 +1,10 @@
 // External Dependencies
 import { Sequelize } from "sequelize-typescript";
-import { Customer } from "../models/customer";
+import Customer  from "../models/Customer";
+import CustomerType  from "../models/CustomerType";
 
 // Initialize Connection
-export class Connection {
+export default class Connection {
   public static connectToDatabase() {
     var dbUser = process.env.DB_USER as string;
     var dbPassword = process.env.DB_PASSWORD;
@@ -16,10 +17,10 @@ export class Connection {
       host: dbHost,
       port: 1433, // Default port
       logging: false, // disable logging; default: console.log
-      models: [Customer],
+      models: [__dirname + './../models'], 
       dialectOptions: {
         requestTimeout: 30000, // timeout = 30 seconds
-      },
+      }
     });
 
     connection
@@ -33,3 +34,7 @@ export class Connection {
     return connection;
   }
 }
+
+// Customer, CustomerType
+
+// __dirname + './../models'

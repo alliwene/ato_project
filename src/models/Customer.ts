@@ -5,119 +5,130 @@ import {
   Column,
   DataType,
   Sequelize,
+  HasOne, 
+  ForeignKey,
+  BelongsTo
 } from "sequelize-typescript";
 import { v4 as uuidv4 } from "uuid";
+import CustomerType  from "./CustomerType";
+
 @Table({
   timestamps: false,
   tableName: "Customer",
   freezeTableName: true,
 })
-export class Customer extends Model<Customer> {
+export default class Customer extends Model {
   @Column({
     type: DataType.UUID,
     defaultValue: DataType.UUIDV4,
     primaryKey: true,
     allowNull: false,
   })
-  public declare customerID: typeof uuidv4;
+  declare public customerID: typeof uuidv4;
+
+  @Column({
+    type: DataType.UUID,
+    defaultValue: DataType.UUIDV4,
+    allowNull: false
+  })
+  declare public customerTypeID: typeof uuidv4;
 
   @Column({
     type: DataType.UUID,
     defaultValue: DataType.UUIDV4,
     allowNull: false,
   })
-  public declare customerTypeID: typeof uuidv4;
+  declare public customerVerificationID: typeof uuidv4;
 
   @Column({
     type: DataType.UUID,
     defaultValue: DataType.UUIDV4,
     allowNull: false,
   })
-  public declare customerVerificationID: typeof uuidv4;
-
-  @Column({
-    type: DataType.UUID,
-    defaultValue: DataType.UUIDV4,
-    allowNull: false,
-  })
-  public declare geolocationID: typeof uuidv4;
+  declare public geolocationID: typeof uuidv4;
 
   @Column({
     type: DataType.TEXT,
     allowNull: false,
   })
-  public declare customerName: string;
+  declare public customerName: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
     unique: true,
   })
-  public declare customerEmailAddress: string;
+  declare public customerEmailAddress: string;
 
   @Column({
     type: DataType.TEXT,
     allowNull: false,
   })
-  public declare customerAddress: string;
+  declare public customerAddress: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
-  public declare customerHomePhone: string;
+  declare public customerHomePhone: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  public declare customerGender: string;
+  declare public customerGender: string;
 
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
   })
-  public declare customerAge: number;
+  declare public customerAge: number;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  public declare customerPersonalPhone: string;
+  declare public customerPersonalPhone: string;
 
   @Column({
     type: DataType.TEXT,
     allowNull: false,
   })
-  public declare customerOccupation: string;
+  declare public customerOccupation: string;
 
   @Column({
     type: DataType.BOOLEAN,
     allowNull: false,
     defaultValue: false,
   })
-  public declare isDeleted: boolean;
+  declare public isDeleted: boolean;
 
   @Column({
     type: DataType.DATE,
     allowNull: false,
     defaultValue: Sequelize.fn("GETDATE"),
   })
-  public declare timeCreated: Date;
+  declare public timeCreated: Date;
 
   @Column({
     type: DataType.DATE,
     allowNull: false,
     defaultValue: Sequelize.fn("GETDATE"),
   })
-  public declare timeUpdated: Date;
+  declare public timeUpdated: Date;
 
   @Column({
     type: DataType.DATE,
     allowNull: true,
   })
-  public declare timeDeleted: Date;
+  declare public timeDeleted: Date;
+
+  @HasOne(() => CustomerType)
+  customer_type!: CustomerType;
+ 
 }
 
-// Customer
+
+
+
 // { force: true }

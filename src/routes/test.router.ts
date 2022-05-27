@@ -1,13 +1,22 @@
 // External Dependencies
+import bodyParser from "body-parser";
 import * as express from "express";
 import { Request, Response } from "express";
-import { Customer } from "../models/customer";
-import { CustomerType } from "../models/customer_type";
+import Customer  from "../models/Customer";
+import CustomerType from "../models/CustomerType";
+
+// import Connection   from "../services/connection";
+// dotenv.config({ path: "./.env" });
+// var sequelize = Connection.connectToDatabase();
+// const customerRepository = sequelize.getRepository(Customer)
+// const customerTypeRepository = sequelize.getRepository(CustomerType)
 
 // Global Config
 export const testsRouter = express.Router();
 testsRouter.use(express.json());
 
+
+// Function to parse error messages
 function getErrorMessage(error: unknown) {
   if (error instanceof Error) return error.message;
   return String(error);
@@ -16,9 +25,11 @@ function getErrorMessage(error: unknown) {
 // GET all customers
 testsRouter.get(
   "/customer",
-  async (req: Request, res: Response): Promise<Response> => {
+  async (_req: Request, res: Response): Promise<Response> => {
     try {
-      const allCustomers: Customer[] = await Customer.findAll();
+      const allCustomers: Customer[] = await Customer.findAll(
+        { include: { model: CustomerType, as: "customer_type" } }
+      );
       return res.status(200).json(allCustomers);
     } catch (error) {
       return res.status(500).send(getErrorMessage(error));
@@ -26,16 +37,42 @@ testsRouter.get(
   }
 );
 
+
 // POST a customer
-testsRouter.post("/customer", async (req: Request, res: Response): Promise<Response> => {
-  try {
-    const customer: Customer = await Customer.create({ ...req.body });
-    return res.status(201).json(customer);
-  } catch (error) {
-    console.error(error);
-    return res.status(400).send(getErrorMessage(error));
+testsRouter.post(
+  "/customer",
+  async (req: Request, res: Response): Promise<Response> => {
+    try {
+      // const customerType = req.body.customer_type;
+      const customer: Customer = await Customer.create(
+        { ...req.body },
+        { include: { model: CustomerType, as: "customer_type" } },
+      );
+      return res.status(201).json(customer);
+    } catch (error) {
+      console.error(error);
+      return res.status(400).send(getErrorMessage(error));
+    }
   }
-});
+);
+
+
+
+testsRouter.post(
+  "/customertype",
+  async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const customer_type: CustomerType = await CustomerType.create(
+        { ...req.body },
+        // { include: [{ model: CustomerType, as: "customer_type" }] }
+      );
+      return res.status(201).json(customer_type);
+    } catch (error) {
+      console.error(error);
+      return res.status(400).send(getErrorMessage(error));
+    }
+  }
+);
 
 // GET
 // testsRouter.get("/payment", async (_req: Request, res: Response) => {
@@ -70,7 +107,7 @@ testsRouter.post("/customer", async (req: Request, res: Response): Promise<Respo
 //   });
 // });
 
-// 
+//
 
 // // PUT
 // testsRouter.put("/:id", async (req: Request, res: Response) => {

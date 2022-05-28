@@ -4,10 +4,9 @@ import {
   Model,
   Column,
   DataType,
-  Sequelize,
-  HasOne,
   BelongsTo,
   ForeignKey,
+  AllowNull, 
 } from "sequelize-typescript";
 // import { BelongsToGetAssociationMixin, ForeignKey } from "sequelize/types";
 import { v4 as uuidv4 } from "uuid";
@@ -25,7 +24,7 @@ export default class CustomerType extends Model {
     primaryKey: true,
     allowNull: false,
   })
-  // public declare customerTypeID: typeof uuidv4;
+  // public declare customerTypeID: typeof uuidv4;http://localhost:8080/tests/customer
   declare public customerTypeID: typeof uuidv4;
 
   @Column({
@@ -37,7 +36,6 @@ export default class CustomerType extends Model {
   @BelongsTo(() => Customer)
   customer!: Customer;
 
-  // public getCustomerType!: BelongsToGetAssociationMixin<Customer>;
 }
 
 // { force: true }

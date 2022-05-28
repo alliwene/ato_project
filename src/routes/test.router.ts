@@ -2,19 +2,13 @@
 import bodyParser from "body-parser";
 import * as express from "express";
 import { Request, Response } from "express";
-import Customer  from "../models/Customer";
+import Customer from "../models/Customer";
 import CustomerType from "../models/CustomerType";
-
-// import Connection   from "../services/connection";
-// dotenv.config({ path: "./.env" });
-// var sequelize = Connection.connectToDatabase();
-// const customerRepository = sequelize.getRepository(Customer)
-// const customerTypeRepository = sequelize.getRepository(CustomerType)
+import Geolocation from "../models/Geolocation";
 
 // Global Config
 export const testsRouter = express.Router();
 testsRouter.use(express.json());
-
 
 // Function to parse error messages
 function getErrorMessage(error: unknown) {
@@ -27,16 +21,18 @@ testsRouter.get(
   "/customer",
   async (_req: Request, res: Response): Promise<Response> => {
     try {
-      const allCustomers: Customer[] = await Customer.findAll(
-        { include: { model: CustomerType, as: "customer_type" } }
-      );
+      const allCustomers: Customer[] = await Customer.findAll({
+        include: [
+          { model: CustomerType, as: "customer_type" },
+          { model: Geolocation, as: "geolocation" },
+        ],
+      });
       return res.status(200).json(allCustomers);
     } catch (error) {
       return res.status(500).send(getErrorMessage(error));
     }
   }
 );
-
 
 // POST a customer
 testsRouter.post(
@@ -46,7 +42,12 @@ testsRouter.post(
       // const customerType = req.body.customer_type;
       const customer: Customer = await Customer.create(
         { ...req.body },
-        { include: { model: CustomerType, as: "customer_type" } },
+        {
+          include: [
+            { model: CustomerType, as: "customer_type" },
+            { model: Geolocation, as: "geolocation" },
+          ],
+        }
       );
       return res.status(201).json(customer);
     } catch (error) {
@@ -56,14 +57,12 @@ testsRouter.post(
   }
 );
 
-
-
 testsRouter.post(
   "/customertype",
   async (req: Request, res: Response): Promise<Response> => {
     try {
       const customer_type: CustomerType = await CustomerType.create(
-        { ...req.body },
+        { ...req.body }
         // { include: [{ model: CustomerType, as: "customer_type" }] }
       );
       return res.status(201).json(customer_type);

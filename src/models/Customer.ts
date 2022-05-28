@@ -5,12 +5,11 @@ import {
   Column,
   DataType,
   Sequelize,
-  HasOne, 
-  ForeignKey,
-  BelongsTo
+  HasOne
 } from "sequelize-typescript";
 import { v4 as uuidv4 } from "uuid";
 import CustomerType  from "./CustomerType";
+import Geolocation from "./Geolocation";
 
 @Table({
   timestamps: false,
@@ -26,26 +25,26 @@ export default class Customer extends Model {
   })
   declare public customerID: typeof uuidv4;
 
-  @Column({
-    type: DataType.UUID,
-    defaultValue: DataType.UUIDV4,
-    allowNull: false
-  })
-  declare public customerTypeID: typeof uuidv4;
+  // @Column({
+  //   type: DataType.UUID,
+  //   defaultValue: DataType.UUIDV4,
+  //   allowNull: false
+  // })
+  // declare public customerTypeID: typeof uuidv4;
 
-  @Column({
-    type: DataType.UUID,
-    defaultValue: DataType.UUIDV4,
-    allowNull: false,
-  })
-  declare public customerVerificationID: typeof uuidv4;
+  // @Column({
+  //   type: DataType.UUID,
+  //   defaultValue: DataType.UUIDV4,
+  //   allowNull: false,
+  // })
+  // declare public customerVerificationID: typeof uuidv4;
 
-  @Column({
-    type: DataType.UUID,
-    defaultValue: DataType.UUIDV4,
-    allowNull: false,
-  })
-  declare public geolocationID: typeof uuidv4;
+  // @Column({
+  //   type: DataType.UUID,
+  //   defaultValue: DataType.UUIDV4,
+  //   allowNull: false,
+  // })
+  // declare public geolocationID: typeof uuidv4;
 
   @Column({
     type: DataType.TEXT,
@@ -125,6 +124,9 @@ export default class Customer extends Model {
 
   @HasOne(() => CustomerType)
   customer_type!: CustomerType;
+
+  @HasOne(() => Geolocation)
+  geolocation!: Geolocation;
  
 }
 

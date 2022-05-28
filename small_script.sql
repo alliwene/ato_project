@@ -137,6 +137,7 @@ CREATE TABLE [dbo].[Customer](
 	[timeCreated] [datetime] NOT NULL,
 	[timeUpdated] [datetime] NOT NULL,
 	[timeDeleted] [datetime] NULL,
+ CONSTRAINT [UQ_Customer] UNIQUE(customerEmailAddress),
  CONSTRAINT [PK_Customer] PRIMARY KEY CLUSTERED 
 (
 	[customerID] ASC

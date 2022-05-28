@@ -122,10 +122,20 @@ export default class Customer extends Model {
   })
   declare public timeDeleted: Date;
 
-  @HasOne(() => CustomerType)
+  @HasOne(() => CustomerType, {
+    foreignKey: {
+      name: "customerTypeID",
+      allowNull: false
+    },
+  })
   customer_type!: CustomerType;
 
-  @HasOne(() => Geolocation)
+  @HasOne(() => Geolocation, {
+    foreignKey: {
+      name: "geolocationID",
+      allowNull: false
+    },
+  })
   geolocation!: Geolocation;
  
 }

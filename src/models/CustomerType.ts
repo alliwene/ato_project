@@ -6,11 +6,11 @@ import {
   DataType,
   BelongsTo,
   ForeignKey,
-  AllowNull, 
+  AllowNull,
 } from "sequelize-typescript";
 // import { BelongsToGetAssociationMixin, ForeignKey } from "sequelize/types";
 import { v4 as uuidv4 } from "uuid";
-import Customer  from "./Customer";
+import Customer from "./Customer";
 @Table({
   timestamps: false,
   tableName: "CustomerType",
@@ -24,18 +24,22 @@ export default class CustomerType extends Model {
     primaryKey: true,
     allowNull: false,
   })
-  // public declare customerTypeID: typeof uuidv4;http://localhost:8080/tests/customer
-  declare public customerTypeID: typeof uuidv4;
+  public declare customerTypeID: typeof uuidv4;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  declare public customerTypeName: string;
+  public declare customerTypeName: string;
 
-  @BelongsTo(() => Customer)
+  @BelongsTo(() => Customer, {
+    targetKey: "customerID",
+    foreignKey: {
+      name: "customerTypeID",
+      allowNull: false,
+    },
+  })
   customer!: Customer;
-
 }
 
 // { force: true }

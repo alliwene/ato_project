@@ -39,7 +39,6 @@ testsRouter.post(
   "/customer",
   async (req: Request, res: Response): Promise<Response> => {
     try {
-      // const customerType = req.body.customer_type;
       const customer: Customer = await Customer.create(
         { ...req.body },
         {
@@ -57,18 +56,15 @@ testsRouter.post(
   }
 );
 
-testsRouter.post(
+// GET CustomerType
+testsRouter.get(
   "/customertype",
-  async (req: Request, res: Response): Promise<Response> => {
+  async (_req: Request, res: Response): Promise<Response> => {
     try {
-      const customer_type: CustomerType = await CustomerType.create(
-        { ...req.body }
-        // { include: [{ model: CustomerType, as: "customer_type" }] }
-      );
-      return res.status(201).json(customer_type);
+      const allCustomerType: CustomerType[] = await CustomerType.findAll();
+      return res.status(200).json(allCustomerType);
     } catch (error) {
-      console.error(error);
-      return res.status(400).send(getErrorMessage(error));
+      return res.status(500).send(getErrorMessage(error));
     }
   }
 );
